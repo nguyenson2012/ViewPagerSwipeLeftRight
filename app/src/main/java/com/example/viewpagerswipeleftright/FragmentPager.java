@@ -1,8 +1,10 @@
 package com.example.viewpagerswipeleftright;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,7 @@ public class FragmentPager extends Fragment {
     private static final String KEY_PAGE_NUMBER = "KEY_PAGE_NUMBER";
     private int pagerID=0;
     private TextView tvPageNumber;
+    private boolean isShowing=true;
 
     public static Fragment newInstance(int pageNumber, int fragmentColor){
         FragmentPager fragmentPager =new FragmentPager();
@@ -34,16 +37,41 @@ public class FragmentPager extends Fragment {
         return layout;
     }
 
+    public void makeRequest(){
+        isShowing=true;
+        Handler handler =new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(isShowing) {
+                    Log.d("FragmentPager", "MAKE_REQUEST in page "+pagerID);
+                }
+            }
+        },500);
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        isShowing=true;
         Bundle argument = getArguments();
         tvPageNumber.setText(argument.getInt(KEY_PAGE_NUMBER)+"");
         getView().setBackgroundColor(argument.getInt(KEY_COLOR_FRAGMENT));
+
     }
 
     public void setPagerID(int pagerID) {
         this.pagerID=pagerID;
-        tvPageNumber.setText("Pager "+pagerID);
+        if(tvPageNumber!=null) {
+            tvPageNumber.setText("Pager " + pagerID);
+        }
+    }
+
+    public boolean isShowing() {
+        return isShowing;
+    }
+
+    public void setShowing(boolean showing) {
+        isShowing = showing;
     }
 }
